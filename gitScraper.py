@@ -25,14 +25,19 @@ limit = input(f'If you want to {choice} until a specific commit, paste in the co
 soup = BeautifulSoup(page.content, 'html.parser')
 results = soup.find_all('li', class_='Box-row Box-row--focus-gray mt-0 d-flex js-commits-list-item js-navigation-item js-details-container Details js-socket-channel js-updatable-content')
 
+commits = []
+
 for result in results:
     entry = result.get('data-url')
     commitSHA = entry.split('/')[4]
     commitMessage = result.find('a').get('aria-label').splitlines()
     if commitSHA == limit or len(limit) == 7 and commitSHA[:7] == limit:
         break
-    line = f'#{commitMessage[0]}\ngit {choice} {commitSHA} --signoff\n'
-    f.write(line)
+    commit = f'#{commitMessage[0]}\ngit {choice} {commitSHA} --signoff\n'
+    commits.append(commit)
+
+for commit in reversed(commits):
+    f.write(commit)
 
 print('Success!')
 f.close()
