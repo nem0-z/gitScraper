@@ -36,7 +36,10 @@ for result in results:
     commit = f'#{commitMessage[0]}\ngit {choice} {commitSHA} --signoff\n'
     commits.append(commit)
 
-for commit in reversed(commits):
+if choice == 'cherry-pick':
+    commits = [*reversed(commits)]
+
+for commit in commits:
     f.write(commit)
 
 print('Success!')
